@@ -166,12 +166,15 @@ const getProjectTasks = (projectId) => {
           </Card>
         </motion.div>
 
-        <motion.div
+<motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
         >
-          <Card className="p-6 bg-gradient-to-br from-blue-50 to-cyan-50 border-blue-200">
+          <Card 
+            className="p-6 bg-gradient-to-br from-blue-50 to-cyan-50 border-blue-200 cursor-pointer hover:shadow-card-hover transition-all duration-200"
+            onClick={() => navigate("/projects?status=To Do")}
+          >
             <div className="flex items-center">
               <div className="p-3 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-lg">
                 <ApperIcon name="ListTodo" className="h-6 w-6 text-white" />

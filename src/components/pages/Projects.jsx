@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { toast } from "react-toastify";
 import ApperIcon from "@/components/ApperIcon";
@@ -18,6 +18,7 @@ import useProjects from "@/hooks/useProjects";
 
 const Projects = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [showProjectModal, setShowProjectModal] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -25,6 +26,14 @@ const Projects = () => {
 
   const { projects, loading: projectsLoading, error: projectsError, loadProjects, createProject, updateProject, deleteProject } = useProjects();
   const { tasks, loading: tasksLoading } = useTasks();
+
+  // Read status filter from URL parameters
+  useEffect(() => {
+    const statusParam = searchParams.get("status");
+    if (statusParam) {
+      setStatusFilter(statusParam);
+    }
+  }, [searchParams]);
 
   const handleCreateProject = async (projectData) => {
     try {
