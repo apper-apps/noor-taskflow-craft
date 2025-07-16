@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { toast } from "react-toastify";
@@ -137,8 +137,7 @@ const getProjectTasks = (projectId) => {
         </div>
         <div className="flex gap-4">
           <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
+onChange={(e) => setStatusFilter(e.target.value)}
             className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
           >
             <option value="all">All Status</option>
@@ -146,7 +145,7 @@ const getProjectTasks = (projectId) => {
             <option value="Active">Active</option>
             <option value="On Hold">On Hold</option>
             <option value="Completed">Completed</option>
-            <option value="Cancelled">Cancelled</option>
+<option value="Cancelled">Cancelled</option>
           </select>
         </div>
       </div>
