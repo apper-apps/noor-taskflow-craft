@@ -1,0 +1,42 @@
+[
+  {
+    "Id": 1,
+    "name": "Website Redesign",
+    "description": "Complete redesign of the company website with modern UI/UX principles and improved performance.",
+    "status": "Active",
+    "createdAt": "2024-01-15T10:00:00Z",
+    "updatedAt": "2024-01-20T14:30:00Z"
+  },
+  {
+    "Id": 2,
+    "name": "Mobile App Development",
+    "description": "Development of a new mobile application for iOS and Android platforms with cross-platform compatibility.",
+    "status": "Planning",
+    "createdAt": "2024-01-10T09:00:00Z",
+    "updatedAt": "2024-01-18T11:15:00Z"
+  },
+  {
+    "Id": 3,
+    "name": "Marketing Campaign Q1",
+    "description": "Launch of comprehensive marketing campaign for Q1 including social media, email marketing, and content creation.",
+    "status": "Active",
+    "createdAt": "2024-01-05T08:00:00Z",
+    "updatedAt": "2024-01-19T16:45:00Z"
+  },
+  {
+    "Id": 4,
+    "name": "Database Migration",
+    "description": "Migration of legacy database to new cloud infrastructure with improved security and performance.",
+    "status": "On Hold",
+    "createdAt": "2024-01-12T13:00:00Z",
+    "updatedAt": "2024-01-17T10:20:00Z"
+  },
+  {
+    "Id": 5,
+    "name": "API Documentation",
+    "description": "Complete documentation of all API endpoints with examples and best practices for developers.",
+    "status": "Completed",
+    "createdAt": "2024-01-08T11:30:00Z",
+    "updatedAt": "2024-01-16T15:00:00Z"
+  }
+]
