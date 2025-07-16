@@ -266,6 +266,8 @@ const TaskList = ({ tasks, onTaskClick, onTaskUpdate, onTaskDelete, className })
   );
 };
 
+export default TaskList;
+
 // Task Comment Thread Component
 const TaskCommentThread = ({ taskId, comments, onAddComment, loading }) => {
   const [newComment, setNewComment] = useState("");
