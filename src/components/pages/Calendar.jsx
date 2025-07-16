@@ -46,9 +46,9 @@ const monthStart = startOfMonth(currentDate);
     });
   };
 
-  const getProjectName = (projectId) => {
+const getProjectName = (projectId) => {
     const project = projects.find(p => p.Id === projectId);
-    return project ? project.name : "Unknown Project";
+    return project ? project.Name : "Unknown Project";
   };
 
   const getProjectColor = (projectId) => {

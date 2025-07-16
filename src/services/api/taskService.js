@@ -1,125 +1,417 @@
-import tasksData from "@/services/mockData/tasks.json";
-
-let tasks = [...tasksData];
-let comments = [];
-let activities = [];
-let nextCommentId = 1;
-let nextActivityId = 1;
-
 export const taskService = {
   getAll: async () => {
-    await new Promise(resolve => setTimeout(resolve, 300));
-    return [...tasks];
+    try {
+      const { ApperClient } = window.ApperSDK;
+      const apperClient = new ApperClient({
+        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+      });
+      
+      const params = {
+        fields: [
+          { field: { Name: "Name" } },
+          { field: { Name: "title" } },
+          { field: { Name: "description" } },
+          { field: { Name: "status" } },
+          { field: { Name: "priority" } },
+          { field: { Name: "due_date" } },
+          { field: { Name: "assignee" } },
+          { field: { Name: "project_id" } },
+          { field: { Name: "created_at" } },
+          { field: { Name: "updated_at" } }
+        ],
+        orderBy: [{ fieldName: "created_at", sorttype: "DESC" }],
+        pagingInfo: { limit: 100, offset: 0 }
+      };
+      
+      const response = await apperClient.fetchRecords("task", params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+      
+      return response.data || [];
+    } catch (error) {
+      console.error("Error fetching tasks:", error);
+      throw error;
+    }
   },
 
   getById: async (id) => {
-    await new Promise(resolve => setTimeout(resolve, 200));
-    const task = tasks.find(t => t.Id === parseInt(id));
-    return task ? { ...task } : null;
+    try {
+      const { ApperClient } = window.ApperSDK;
+      const apperClient = new ApperClient({
+        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+      });
+      
+      const params = {
+        fields: [
+          { field: { Name: "Name" } },
+          { field: { Name: "title" } },
+          { field: { Name: "description" } },
+          { field: { Name: "status" } },
+          { field: { Name: "priority" } },
+          { field: { Name: "due_date" } },
+          { field: { Name: "assignee" } },
+          { field: { Name: "project_id" } },
+          { field: { Name: "created_at" } },
+          { field: { Name: "updated_at" } }
+        ]
+      };
+      
+      const response = await apperClient.getRecordById("task", parseInt(id), params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+      
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching task:", error);
+      throw error;
+    }
   },
 
   getByProjectId: async (projectId) => {
-    await new Promise(resolve => setTimeout(resolve, 250));
-    return tasks.filter(t => t.projectId === parseInt(projectId)).map(t => ({ ...t }));
+    try {
+      const { ApperClient } = window.ApperSDK;
+      const apperClient = new ApperClient({
+        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+      });
+      
+      const params = {
+        fields: [
+          { field: { Name: "Name" } },
+          { field: { Name: "title" } },
+          { field: { Name: "description" } },
+          { field: { Name: "status" } },
+          { field: { Name: "priority" } },
+          { field: { Name: "due_date" } },
+          { field: { Name: "assignee" } },
+          { field: { Name: "project_id" } },
+          { field: { Name: "created_at" } },
+          { field: { Name: "updated_at" } }
+        ],
+        where: [
+          {
+            FieldName: "project_id",
+            Operator: "EqualTo",
+            Values: [parseInt(projectId)]
+          }
+        ],
+        orderBy: [{ fieldName: "created_at", sorttype: "DESC" }],
+        pagingInfo: { limit: 100, offset: 0 }
+      };
+      
+      const response = await apperClient.fetchRecords("task", params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+      
+      return response.data || [];
+    } catch (error) {
+      console.error("Error fetching tasks by project:", error);
+      throw error;
+    }
   },
 
-create: async (taskData) => {
-    await new Promise(resolve => setTimeout(resolve, 400));
-    const newTask = {
-      ...taskData,
-      Id: Math.max(...tasks.map(t => t.Id), 0) + 1,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
-    tasks.push(newTask);
-    
-    // Log creation activity
-    await taskService.logActivity(newTask.Id, "created", `Task "${newTask.title}" was created`);
-    
-    return { ...newTask };
+  create: async (taskData) => {
+    try {
+      const { ApperClient } = window.ApperSDK;
+      const apperClient = new ApperClient({
+        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+      });
+      
+      // Only include updateable fields
+      const params = {
+        records: [{
+          Name: taskData.title || taskData.Name,
+          title: taskData.title,
+          description: taskData.description,
+          status: taskData.status,
+          priority: taskData.priority,
+          due_date: taskData.dueDate || taskData.due_date,
+          assignee: taskData.assignee,
+          project_id: taskData.projectId || taskData.project_id,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        }]
+      };
+      
+      const response = await apperClient.createRecord("task", params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+      
+      if (response.results) {
+        const failedRecords = response.results.filter(result => !result.success);
+        if (failedRecords.length > 0) {
+          console.error(`Failed to create ${failedRecords.length} records:${JSON.stringify(failedRecords)}`);
+          throw new Error("Failed to create task");
+        }
+        
+        const successfulRecords = response.results.filter(result => result.success);
+        return successfulRecords[0]?.data;
+      }
+      
+      return null;
+    } catch (error) {
+      console.error("Error creating task:", error);
+      throw error;
+    }
   },
 
   update: async (id, taskData) => {
-    await new Promise(resolve => setTimeout(resolve, 400));
-    const index = tasks.findIndex(t => t.Id === parseInt(id));
-    if (index !== -1) {
-      tasks[index] = {
-        ...tasks[index],
-        ...taskData,
-        Id: parseInt(id),
-        updatedAt: new Date().toISOString(),
+    try {
+      const { ApperClient } = window.ApperSDK;
+      const apperClient = new ApperClient({
+        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+      });
+      
+      // Only include updateable fields
+      const params = {
+        records: [{
+          Id: parseInt(id),
+          Name: taskData.title || taskData.Name,
+          title: taskData.title,
+          description: taskData.description,
+          status: taskData.status,
+          priority: taskData.priority,
+          due_date: taskData.dueDate || taskData.due_date,
+          assignee: taskData.assignee,
+          project_id: taskData.projectId || taskData.project_id,
+          updated_at: new Date().toISOString()
+        }]
       };
-      return { ...tasks[index] };
+      
+      const response = await apperClient.updateRecord("task", params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+      
+      if (response.results) {
+        const failedRecords = response.results.filter(result => !result.success);
+        if (failedRecords.length > 0) {
+          console.error(`Failed to update ${failedRecords.length} records:${JSON.stringify(failedRecords)}`);
+          throw new Error("Failed to update task");
+        }
+        
+        const successfulRecords = response.results.filter(result => result.success);
+        return successfulRecords[0]?.data;
+      }
+      
+      return null;
+    } catch (error) {
+      console.error("Error updating task:", error);
+      throw error;
     }
-    return null;
   },
 
   delete: async (id) => {
-    await new Promise(resolve => setTimeout(resolve, 300));
-    const index = tasks.findIndex(t => t.Id === parseInt(id));
-    if (index !== -1) {
-      tasks.splice(index, 1);
-      return true;
+    try {
+      const { ApperClient } = window.ApperSDK;
+      const apperClient = new ApperClient({
+        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+      });
+      
+      const params = {
+        RecordIds: [parseInt(id)]
+      };
+      
+      const response = await apperClient.deleteRecord("task", params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+      
+      if (response.results) {
+        const failedRecords = response.results.filter(result => !result.success);
+        if (failedRecords.length > 0) {
+          console.error(`Failed to delete ${failedRecords.length} records:${JSON.stringify(failedRecords)}`);
+          throw new Error("Failed to delete task");
+        }
+        
+        return true;
+      }
+      
+      return false;
+    } catch (error) {
+      console.error("Error deleting task:", error);
+      throw error;
     }
-    return false;
-},
+  },
 
   // Comment management
   addComment: async (taskId, commentText) => {
-    await new Promise(resolve => setTimeout(resolve, 300));
-    const newComment = {
-      Id: nextCommentId++,
-      taskId: parseInt(taskId),
-      text: commentText,
-      author: "Current User", // In a real app, this would be from auth context
-      createdAt: new Date().toISOString(),
-    };
-    comments.push(newComment);
-    
-    // Log comment activity
-    await taskService.logActivity(taskId, "comment", `Added a comment: "${commentText.substring(0, 50)}${commentText.length > 50 ? '...' : ''}"`);
-    
-    return { ...newComment };
+    try {
+      const { ApperClient } = window.ApperSDK;
+      const apperClient = new ApperClient({
+        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+      });
+      
+      const params = {
+        records: [{
+          Name: `Comment for Task ${taskId}`,
+          text: commentText,
+          author: "Current User",
+          task_id: parseInt(taskId),
+          created_at: new Date().toISOString()
+        }]
+      };
+      
+      const response = await apperClient.createRecord("app_Comment", params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+      
+      if (response.results) {
+        const successfulRecords = response.results.filter(result => result.success);
+        return successfulRecords[0]?.data;
+      }
+      
+      return null;
+    } catch (error) {
+      console.error("Error adding comment:", error);
+      throw error;
+    }
   },
 
   getComments: async (taskId) => {
-    await new Promise(resolve => setTimeout(resolve, 200));
-    return comments
-      .filter(c => c.taskId === parseInt(taskId))
-      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-      .map(c => ({ ...c }));
-  },
-
-  deleteComment: async (commentId) => {
-    await new Promise(resolve => setTimeout(resolve, 200));
-    const index = comments.findIndex(c => c.Id === parseInt(commentId));
-    if (index !== -1) {
-      comments.splice(index, 1);
-      return true;
+    try {
+      const { ApperClient } = window.ApperSDK;
+      const apperClient = new ApperClient({
+        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+      });
+      
+      const params = {
+        fields: [
+          { field: { Name: "Name" } },
+          { field: { Name: "text" } },
+          { field: { Name: "author" } },
+          { field: { Name: "task_id" } },
+          { field: { Name: "created_at" } }
+        ],
+        where: [
+          {
+            FieldName: "task_id",
+            Operator: "EqualTo",
+            Values: [parseInt(taskId)]
+          }
+        ],
+        orderBy: [{ fieldName: "created_at", sorttype: "DESC" }],
+        pagingInfo: { limit: 100, offset: 0 }
+      };
+      
+      const response = await apperClient.fetchRecords("app_Comment", params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+      
+      return response.data || [];
+    } catch (error) {
+      console.error("Error fetching comments:", error);
+      throw error;
     }
-    return false;
   },
 
   // Activity logging
   logActivity: async (taskId, type, description, user = "Current User") => {
-    await new Promise(resolve => setTimeout(resolve, 100));
-    const activity = {
-      Id: nextActivityId++,
-      taskId: parseInt(taskId),
-      type,
-      description,
-      user,
-      timestamp: new Date().toISOString(),
-    };
-    activities.push(activity);
-    return { ...activity };
+    try {
+      const { ApperClient } = window.ApperSDK;
+      const apperClient = new ApperClient({
+        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+      });
+      
+      const params = {
+        records: [{
+          Name: `Activity for Task ${taskId}`,
+          task_id: parseInt(taskId),
+          type: type,
+          description: description,
+          user: user,
+          timestamp: new Date().toISOString()
+        }]
+      };
+      
+      const response = await apperClient.createRecord("app_Activity", params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+      
+      if (response.results) {
+        const successfulRecords = response.results.filter(result => result.success);
+        return successfulRecords[0]?.data;
+      }
+      
+      return null;
+    } catch (error) {
+      console.error("Error logging activity:", error);
+      throw error;
+    }
   },
 
   getActivities: async (taskId) => {
-    await new Promise(resolve => setTimeout(resolve, 200));
-    return activities
-      .filter(a => a.taskId === parseInt(taskId))
-      .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
-      .map(a => ({ ...a }));
-  },
+    try {
+      const { ApperClient } = window.ApperSDK;
+      const apperClient = new ApperClient({
+        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+      });
+      
+      const params = {
+        fields: [
+          { field: { Name: "Name" } },
+          { field: { Name: "task_id" } },
+          { field: { Name: "type" } },
+          { field: { Name: "description" } },
+          { field: { Name: "user" } },
+          { field: { Name: "timestamp" } }
+        ],
+        where: [
+          {
+            FieldName: "task_id",
+            Operator: "EqualTo",
+            Values: [parseInt(taskId)]
+          }
+        ],
+        orderBy: [{ fieldName: "timestamp", sorttype: "DESC" }],
+        pagingInfo: { limit: 100, offset: 0 }
+      };
+      
+      const response = await apperClient.fetchRecords("app_Activity", params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+      
+      return response.data || [];
+    } catch (error) {
+      console.error("Error fetching activities:", error);
+      throw error;
+    }
+  }
 };

@@ -11,7 +11,7 @@ const useProjects = () => {
       setLoading(true);
       setError("");
       const data = await projectService.getAll();
-      setProjects(data);
+      setProjects(data || []);
     } catch (err) {
       setError(err.message || "Failed to load projects");
     } finally {

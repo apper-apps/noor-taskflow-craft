@@ -69,7 +69,7 @@ const MyTasks = () => {
     setShowTaskModal(true);
   };
 
-  // Filter tasks based on search and filters
+// Filter tasks based on search and filters
   const filteredTasks = tasks.filter(task => {
     const matchesSearch = task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          task.description?.toLowerCase().includes(searchQuery.toLowerCase());

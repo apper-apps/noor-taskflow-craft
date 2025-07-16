@@ -49,8 +49,8 @@ const Dashboard = () => {
     setShowProjectModal(true);
   };
 
-  const getProjectTasks = (projectId) => {
-    return tasks.filter(task => task.projectId === projectId);
+const getProjectTasks = (projectId) => {
+    return tasks.filter(task => task.project_id === projectId);
   };
 
   const getProjectProgress = (projectId) => {
@@ -228,8 +228,8 @@ const Dashboard = () => {
                       </Button>
                     </div>
 
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                      {project.name}
+<h3 className="text-lg font-semibold text-gray-900 mb-2">
+                      {project.Name}
                     </h3>
                     <p className="text-gray-600 text-sm mb-4 line-clamp-2">
                       {project.description}

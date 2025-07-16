@@ -3,18 +3,18 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { toast } from "react-toastify";
 import ApperIcon from "@/components/ApperIcon";
-import Card from "@/components/atoms/Card";
-import Button from "@/components/atoms/Button";
-import Loading from "@/components/ui/Loading";
-import Error from "@/components/ui/Error";
 import Empty from "@/components/ui/Empty";
+import Error from "@/components/ui/Error";
+import Loading from "@/components/ui/Loading";
+import ProjectForm from "@/components/organisms/ProjectForm";
 import Modal from "@/components/molecules/Modal";
 import StatusPill from "@/components/molecules/StatusPill";
-import ProgressRing from "@/components/molecules/ProgressRing";
-import ProjectForm from "@/components/organisms/ProjectForm";
 import SearchBar from "@/components/molecules/SearchBar";
-import useProjects from "@/hooks/useProjects";
+import ProgressRing from "@/components/molecules/ProgressRing";
+import Card from "@/components/atoms/Card";
+import Button from "@/components/atoms/Button";
 import useTasks from "@/hooks/useTasks";
+import useProjects from "@/hooks/useProjects";
 
 const Projects = () => {
   const navigate = useNavigate();
@@ -63,8 +63,8 @@ const Projects = () => {
     setShowProjectModal(true);
   };
 
-  const getProjectTasks = (projectId) => {
-    return tasks.filter(task => task.projectId === projectId);
+const getProjectTasks = (projectId) => {
+    return tasks.filter(task => task.project_id === projectId);
   };
 
   const getProjectProgress = (projectId) => {
@@ -74,9 +74,9 @@ const Projects = () => {
     return (completedTasks / projectTasks.length) * 100;
   };
 
-  // Filter projects based on search and status
+// Filter projects based on search and status
   const filteredProjects = projects.filter(project => {
-    const matchesSearch = project.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    const matchesSearch = project.Name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          project.description?.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesStatus = statusFilter === "all" || project.status === statusFilter;
     
@@ -196,12 +196,12 @@ const Projects = () => {
                     </div>
                   </div>
 
-                  <div
+<div
                     className="cursor-pointer"
                     onClick={() => navigate(`/project/${project.Id}`)}
                   >
                     <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                      {project.name}
+                      {project.Name}
                     </h3>
                     <p className="text-gray-600 text-sm mb-4 line-clamp-2">
                       {project.description}

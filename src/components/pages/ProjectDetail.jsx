@@ -1,21 +1,21 @@
-import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { motion } from "framer-motion";
 import ApperIcon from "@/components/ApperIcon";
-import Button from "@/components/atoms/Button";
-import Loading from "@/components/ui/Loading";
-import Error from "@/components/ui/Error";
 import Empty from "@/components/ui/Empty";
-import Modal from "@/components/molecules/Modal";
-import ProjectOverview from "@/components/organisms/ProjectOverview";
+import Error from "@/components/ui/Error";
+import Loading from "@/components/ui/Loading";
 import KanbanBoard from "@/components/organisms/KanbanBoard";
-import TaskList from "@/components/organisms/TaskList";
+import ProjectOverview from "@/components/organisms/ProjectOverview";
 import TaskForm from "@/components/organisms/TaskForm";
+import TaskList from "@/components/organisms/TaskList";
 import ProjectForm from "@/components/organisms/ProjectForm";
-import { projectService } from "@/services/api/projectService";
+import Dashboard from "@/components/pages/Dashboard";
+import Modal from "@/components/molecules/Modal";
+import Button from "@/components/atoms/Button";
 import useTasks from "@/hooks/useTasks";
-
+import { projectService } from "@/services/api/projectService";
 const ProjectDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -47,7 +47,7 @@ const ProjectDetail = () => {
       }
     };
 
-    loadProject();
+loadProject();
   }, [id]);
 
   const handleCreateTask = async (taskData) => {
@@ -59,7 +59,6 @@ const ProjectDetail = () => {
       toast.error(err.message);
     }
   };
-
   const handleUpdateTask = async (taskData) => {
     try {
       await updateTask(selectedTask.Id, taskData);

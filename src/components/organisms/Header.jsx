@@ -1,11 +1,15 @@
-import React from "react";
+import React, { useContext } from "react";
+import { useSelector } from "react-redux";
 import { cn } from "@/utils/cn";
+import { AuthContext } from "@/App";
 import ApperIcon from "@/components/ApperIcon";
 import Button from "@/components/atoms/Button";
 import SearchBar from "@/components/molecules/SearchBar";
 import Avatar from "@/components/atoms/Avatar";
-
 const Header = ({ onMenuClick, searchValue, onSearchChange, className }) => {
+  const { logout } = useContext(AuthContext);
+  const { user } = useSelector((state) => state.user);
+  
   return (
     <header className={cn("bg-white shadow-sm border-b border-gray-200", className)}>
       <div className="px-4 sm:px-6 lg:px-8">
@@ -45,7 +49,17 @@ const Header = ({ onMenuClick, searchValue, onSearchChange, className }) => {
               <ApperIcon name="Settings" className="h-5 w-5" />
             </Button>
             
-            <Avatar name="John Doe" size="md" />
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="p-2"
+              onClick={logout}
+              title="Logout"
+            >
+              <ApperIcon name="LogOut" className="h-5 w-5" />
+            </Button>
+            
+            <Avatar name={user?.firstName || "User"} size="md" />
           </div>
         </div>
       </div>
