@@ -114,7 +114,10 @@ const getProjectTasks = (projectId) => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
         >
-          <Card className="p-6 bg-gradient-to-br from-indigo-50 to-purple-50 border-indigo-200">
+<Card 
+            className="p-6 bg-gradient-to-br from-indigo-50 to-purple-50 border-indigo-200 cursor-pointer hover:shadow-card-hover transition-all duration-200"
+            onClick={() => navigate("/projects")}
+          >
             <div className="flex items-center">
               <div className="p-3 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg">
                 <ApperIcon name="Folder" className="h-6 w-6 text-white" />
