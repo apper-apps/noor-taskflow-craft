@@ -178,11 +178,12 @@ const MyTasks = () => {
           </div>
         </motion.div>
 
-        <motion.div
+<motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="bg-white rounded-lg shadow-card p-6 border border-gray-200"
+          className="bg-white rounded-lg shadow-card p-6 border border-gray-200 cursor-pointer hover:shadow-card-hover hover:border-emerald-300 transition-all duration-200"
+          onClick={() => setStatusFilter("Done")}
         >
           <div className="flex items-center">
             <div className="p-3 bg-gradient-to-br from-emerald-500 to-green-600 rounded-lg">
